@@ -6,7 +6,7 @@ const crypto = require("./../utils/crypto");
 const {
   sendApiRequest,
   getElectricCompany,
-  getMobileNetwork,
+  getNetwork,
   getAirtimeProductList,
   makeAirtimePurchase,
   makeDataPurchase,
@@ -19,9 +19,24 @@ const Transactions = require("./../models/userModel");
 
 exports.get = factory.getAll(Transactions);
 
+exports.getMobileNetwork = catchAsync(async (req, res, next) => {
+  if(!req.query.mobile) return next(new AppError("Mobile Number Not Provided."))
+  const { info, products } = await getNetwork(req.query.mobile);
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      operator: info.operator,
+      min: products[0].min,
+      max: products[0].max,
+      rate: products[0].rate
+    },
+  });
+})
+
 exports.buyAirtime = catchAsync(async (req, res, next) => {
   const { phone, amount } = req.body;
-
+ 
   if (!phone || !amount) return next(new AppError("Invalid Inputs"));
 
   const ref = crypto.genRandomId();

@@ -2,25 +2,13 @@
 <div class="col-lg-4 mb-4 mb-lg-0">
     <h2 class="text-4 mb-3">Buy Airtime</h2>
     <form id="buy-airtime" method="get" action="/buy-airtime/summary">
-        <div class="mb-3">
-            <div class="custom-control custom-radio custom-control-inline">
-                <input id="prepaid" name="rechargeBillpayment" class="custom-control-input" checked="" required
-                    type="radio">
-                <label class="custom-control-label" for="prepaid">Prepaid</label>
-            </div>
-            <div class="custom-control custom-radio custom-control-inline">
-                <input disabled id="postpaid" name="rechargeBillpayment" class="custom-control-input" required
-                    type="radio">
-                <label class="custom-control-label" for="postpaid">Postpaid</label>
-            </div>
+        <div class="form-group">
+            <input type="text" class="form-control" data-bv-field="number" id="mobileNumber" required
+                placeholder="Enter Mobile Number">
         </div>
         <div class="form-group">
-            <select class="custom-select" name="network" id="network" required="">
-                <option value="">Select Mobile Network</option>
-                {{#each networks }}
-                <option value="{{code}}">{{label}}</option>
-                {{/each }}
-            </select>
+            <input type="text" class="form-control" data-bv-field="number" id="mobileNetwork" required
+                placeholder="Mobile Network">
         </div>
         <div class="form-group input-group">
             <div class="input-group-prepend"> <span class="input-group-text">₦</span> </div>
@@ -29,11 +17,7 @@
             <input class="form-control" id="airtime-amount" min="50" max="50000"
                 oninput="calculateAmountToBePaid(this.value)" placeholder="Enter Amount" required type="number">
         </div>
-        <div class="form-group">
-            <input type="text" class="form-control" data-bv-field="number" id="mobileNumber" required
-                placeholder="Enter Mobile Number">
-        </div>
-        <button class="btn btn-primary btn-block" id="buy-airtime-submit" type="submit">
+        <button disabled class="btn btn-primary btn-block" id="buy-airtime-submit" type="submit">
             Buy Airtime
         </button>
     </form>

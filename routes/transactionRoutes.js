@@ -22,6 +22,8 @@ router.get(
   transactionsController.get
 );
 
+router.get("/get-mobile-network", transactionsController.getMobileNetwork)
+
 /**
  * Check if user has sufficient fund to perform transaction
  * Only users with sufficient funds can access the below routes

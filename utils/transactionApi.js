@@ -99,9 +99,10 @@ exports.getAllNetworks = () => networks;
 exports.getMobileNetworks = () =>
   networks.filter((network) => network.isMobile);
 
-exports.getMobileNetwork = (networkCode) =>
-  this.getMobileNetworks().find((network) => network.code === networkCode)
-    .value;
+exports.getNetwork = async (mobile) => {
+  const hash = crypto.generateHash();
+  return await this.getAirtimeProductList(mobile, hash)
+};
 
 exports.convertToGigaRate = (megaRate) => {
   return `${megaRate / 1000}GB`;
