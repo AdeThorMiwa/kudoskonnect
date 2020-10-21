@@ -18,8 +18,7 @@ exports.dataBundle = (req, res, next) => {
   res.render("pages/data-bundle", {
     page,
     title: "Buy Data Bundle",
-    tabContent: tabIntros[page],
-    networks: getAllNetworks(),
+    tabContent: tabIntros[page]
   });
 };
 
@@ -85,6 +84,12 @@ exports.support = (req, res, next) => {
 exports.airtimeSummary = (req, res, next) => {
   res.render("pages/summary/airtime", {
     title: "Airtime",
+  });
+}
+
+exports.dataSummary = (req, res, next) => {
+  res.render("pages/summary/data", {
+    title: "Data Bundle",
   });
 }
 

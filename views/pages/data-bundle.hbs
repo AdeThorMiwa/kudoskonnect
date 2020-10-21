@@ -1,27 +1,20 @@
 <div class="col-lg-4 mb-4 mb-lg-0">
+    <h2 class="text-4 mb-3">Buy Data Bundle</h2>
     <form id="buy-data-bundle" method="get" action="/buy-data/summary">
         <div class="form-group">
-            <select onchange="setBundlePlansFor(this.value)" class="custom-select" name="network" id="network"
-                required="">
-                <option value="">Select Mobile Network</option>
-                {{#each networks }}
-                <option value="{{value}}">{{label}}</option>
-                {{/each }}
-            </select>
+            <input type="text" class="form-control" name="mobile" data-bv-field="number" id="mobileNumber" required
+                placeholder="Enter Telephone Number" value="+234">
         </div>
         <div class="form-group">
-            <select class="custom-select" onchange="setAmount(this.value)" name="plans" id="plans" required="">
+            <input type="text" class="form-control" name="network" data-bv-field="number" id="mobileNetwork" required
+                placeholder="Mobile Network">
+        </div>
+        <div class="form-group">
+            <select class="custom-select" name="plans" id="plans" required="">
                 <option value="">Data Bundle Plan</option>
             </select>
         </div>
-        <div class="form-group">
-            <input type="text" class="form-control" data-bv-field="number" id="telephoneNumber" required
-                placeholder="Enter Telephone Number">
-        </div>
-        <div class="form-group input-group">
-            <div class="input-group-prepend"> <span class="input-group-text">₦</span> </div>
-            <input class="form-control" id="amount" placeholder="Amount to Pay" required type="text">
-        </div>
+        <input type="hidden" name="amount" id="bundleAmount">
         <button class="btn btn-primary btn-block" type="submit">Buy Data Bundle</button>
     </form>
 </div>
@@ -46,7 +39,4 @@
         </div>
     </div>
 </div>
-<!-- Hidden List for getting Networks -->
-{{> components/networkList }}
-<!-- Slideshow end -->
-<script src="js/page/data-bundle.js"></script>
+<script src="/js/page/data-bundle.js"></script>

@@ -1,45 +1,34 @@
-const getNetworks = () => {
-  const networkOptions = document.querySelector("#networks").children;
-  const networks = [];
-  for (child in networkOptions) {
-    if (isNaN(child)) break;
-    let dataPlans = [];
-    const planList = networkOptions[child].getElementsByClassName(
-      "network-data-plans"
-    );
-    if (planList.length) {
-      for (item in planList) {
-        if (isNaN(item)) break;
-        dataPlans.push({
-          code: planList[item].getAttribute("code"),
-          value: planList[item].getAttribute("val"),
-          amount: planList[item].getAttribute("amount"),
-        });
-      }
-    }
+const getDataValue = (amount) => Number(amount) > 1000 ? `${Number(amount) / 1000}GB` : `${amount}MB`;
 
-    networks.push({
-      code: networkOptions[child].getAttribute("code"),
-      value: networkOptions[child].getAttribute("val"),
-      label: networkOptions[child].getAttribute("label"),
-      dataPlans,
-    });
+const initializeValues = ({ operator, plans }) => {
+    document.querySelector("#mobileNetwork").value = operator;
+    document.querySelector("#mobileNetwork").readOnly = true;
+
+    document.querySelector("#plans").innerHTML = `${plans.map(({ id, data_amount: da, price, validity }) => (
+      `<option value="${id}" amount="${price}">${getDataValue(da)} for ₦${price} valid for ${validity}</option>`
+      )).join("")}`;
+    document.querySelector("#bundleAmount").value = plans[0].price;
+}
+
+const getAvailablePlans = async (e) => {
+    e.preventDefault()
+    const mobile = e.target.value;
+    const eMssg = "Unable to Get Data Plans. Please try again";
+    try {
+        const res = await fetcher.get(`/api/transaction/get-available-plans?mobile=${mobile}`);
+
+        if (res.status === "fail" || res.status === "error")
+        return alert.error(eMssg);
+        initializeValues({ mobile, ...res.data })
+  } catch (e) {
+    alert.error(eMssg);
   }
+}
 
-  return networks;
-};
+const handlePlanChange = (e) => {
+  const option = [ ...e.target ].find(option => option.selected)
+  document.querySelector("#bundleAmount").value = option.getAttribute("amount")
+}
 
-const getNetworkPlans = (network) =>
-  getNetworks().find((n) => n.value === network).dataPlans;
-
-const setBundlePlansFor = (network) =>
-  (document.querySelector("#plans").innerHTML =
-    "<option value=''>Data Bundle Plan</option>" +
-    getNetworkPlans(network)
-      .map((plan) => `<option value="${plan.code}">${plan.value}</option>`)
-      .join(""));
-
-const setAmount = (value) =>
-  (document.querySelector("#amount").value = getNetworkPlans(
-    document.querySelector("#network").value
-  ).find((plan) => plan.code === value).amount);
+document.querySelector("#mobileNumber").addEventListener("focusout", getAvailablePlans)
+document.querySelector("#plans").addEventListener("change", handlePlanChange)

@@ -2,15 +2,8 @@ const axios = require("axios");
 const networks = require("./../constants/networks");
 const crypto = require("./../utils/crypto");
 
-exports.sendApiRequest = async (to, query) => {
-  try {
-    return res.data;
-  } catch (e) {
-    throw e;
-  }
-};
-
-exports.getAirtimeProductList = async (phone, hash) => {
+exports.getAirtimeProductList = async (phone) => {
+  const hash = crypto.generateHash();
   const res = await axios.post(
     "https://estoresms.com/network_list/v/2",
     JSON.stringify({
@@ -48,7 +41,8 @@ exports.makeAirtimePurchase = async (productId, phone, amount, ref, hash) => {
   return res.data.result[0];
 };
 
-exports.getDataProductList = async (phone, hash) => {
+exports.getDataProductList = async (phone) => {
+  const hash = crypto.generateHash();
   const res = await axios.post(
     "https://estoresms.com/data_list/v/2",
     JSON.stringify({
@@ -57,9 +51,9 @@ exports.getDataProductList = async (phone, hash) => {
       phone,
     })
   );
-
+  
   if (res.data.response !== "OK")
-    throw new Error("Unable to get Data Product List");
+    throw new Error(`Error getting Data Product List: ${res.data.message}`);
 
   return res.data;
 };
@@ -80,7 +74,7 @@ exports.makeDataPurchase = async (productId, phone, ref, hash) => {
       ],
     })
   );
-  console.log(res.data);
+  
   if (res.data.failed !== 0) throw new Error(res.data.message);
 
   return res.data.result[0];
@@ -97,11 +91,6 @@ exports.getElectricCompany = async (companyCode) => {
 exports.getAllNetworks = () => networks;
 exports.getMobileNetworks = () =>
   networks.filter((network) => network.isMobile);
-
-exports.getNetwork = async (mobile) => {
-  const hash = crypto.generateHash();
-  return await this.getAirtimeProductList(mobile, hash)
-};
 
 exports.convertToGigaRate = (megaRate) => {
   return `${megaRate / 1000}GB`;

@@ -24,6 +24,7 @@ router.get(
 );
 
 router.get("/buy-airtime/summary", authController.protect, views.useSummaryLayout, views.airtimeSummary);
+router.get("/buy-data/summary", authController.protect, views.useSummaryLayout, views.dataSummary);
 
 router.use(authController.isLoggedIn);
 

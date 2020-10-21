@@ -21,7 +21,7 @@ exports.get = factory.getAll(Transactions);
 
 exports.getMobileNetwork = catchAsync(async (req, res, next) => {
   if(!req.query.mobile) return next(new AppError("Mobile Number Not Provided."))
-  const { info, products } = await getNetwork(req.query.mobile);
+  const { info, products } = await getAirtimeProductList(req.query.mobile);
 
   res.status(201).json({
     status: "success",
@@ -30,6 +30,19 @@ exports.getMobileNetwork = catchAsync(async (req, res, next) => {
       min: products[0].min,
       max: products[0].max,
       rate: products[0].rate
+    },
+  });
+})
+
+exports.getAvailablePlans = catchAsync(async (req, res, next) => {
+  if(!req.query.mobile) return next(new AppError("Mobile Number Not Provided."));
+
+  const { info, products } = await getDataProductList(req.query.mobile);
+  res.status(201).json({
+    status: "success",
+    data: {
+      operator: info.operator,
+      plans: products
     },
   });
 })
@@ -74,24 +87,10 @@ exports.buyAirtime = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.availableDataPlans = catchAsync(async (req, res, next) => {
-  const { products } = await getDataProductList(phone, crypto.generateHash());
-
-  res.status(201).json({
-    status: "success",
-    data: {
-      plans: products.map((product) => ({
-        ...product,
-        data_amount: getDataValue(product.data_amount),
-      })),
-    },
-  });
-});
-
 exports.buyData = catchAsync(async (req, res, next) => {
-  const { phone, type } = req.body;
+  const { phone, plan } = req.body;
 
-  if (!phone || !type) {
+  if (!phone || !plan) {
     return next(new AppError("Invalid Inputs"));
   }
 
@@ -107,7 +106,7 @@ exports.buyData = catchAsync(async (req, res, next) => {
     data_amount,
     amount,
     amount_charged,
-  } = await makeDataPurchase(type, phone, ref, hash);
+  } = await makeDataPurchase(plan, phone, ref, hash);
 
   const transaction = await Transactions.create({
     transactionId: transaction_id,
@@ -116,7 +115,7 @@ exports.buyData = catchAsync(async (req, res, next) => {
     trx_detail: {
       mobileNetwork: info,
       mobileNumber: phone,
-      plan: products.find(product.id === type),
+      plan: products.find(product.id === plan),
     },
     orderType: `${getDataValue(data_amount)} Data Purchase`,
     amount: amount,

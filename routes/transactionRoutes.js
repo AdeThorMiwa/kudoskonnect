@@ -23,6 +23,7 @@ router.get(
 );
 
 router.get("/get-mobile-network", transactionsController.getMobileNetwork)
+router.get("/get-available-plans", transactionsController.getAvailablePlans)
 
 /**
  * Check if user has sufficient fund to perform transaction
