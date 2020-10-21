@@ -1,6 +1,6 @@
 const logout = async () => {
   try {
-    const res = await fetcher.get("http://localhost:5000/api/user/logout");
+    const res = await fetcher.get("/api/user/logout");
 
     if (res.status === "fail" || res.status === "error")
       return alert.error(res.message);

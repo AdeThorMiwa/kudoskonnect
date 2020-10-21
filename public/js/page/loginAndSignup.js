@@ -1,6 +1,6 @@
 const loginUser = async (email, password) => {
   try {
-    const res = await fetcher.post("http://localhost:5000/api/user/login", {
+    const res = await fetcher.post("/api/user/login", {
       email,
       password,
     });
