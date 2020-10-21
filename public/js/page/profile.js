@@ -9,7 +9,7 @@ const updateUser = async (formData) => {
       `Profile Updated Successfully!`
     );
   } catch (e) {
-    alert.error(res.message);
+    alert.error(e.message);
   }
 };
 

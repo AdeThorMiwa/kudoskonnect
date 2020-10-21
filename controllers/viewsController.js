@@ -9,8 +9,7 @@ exports.home = (req, res, next) => {
   res.render("pages/home", {
     page,
     title: "Buy Airtime",
-    tabContent: tabIntros[page],
-    networks: getMobileNetworks(),
+    tabContent: tabIntros[page]
   });
 };
 
@@ -83,6 +82,12 @@ exports.support = (req, res, next) => {
   });
 };
 
+exports.airtimeSummary = (req, res, next) => {
+  res.render("pages/summary/airtime", {
+    title: "Airtime",
+  });
+}
+
 exports.usePagesLayout = (req, res, next) => {
   res.locals.layout = "pages";
   res.locals.page = req.url.slice(1, req.url.length);
@@ -94,3 +99,10 @@ exports.useProfileLayout = (req, res, next) => {
   res.locals.page = req.url.slice(1, req.url.length);
   next();
 };
+
+exports.useSummaryLayout = (req, res, next ) => {
+  res.locals.layout = "summary";
+  res.locals.page = req.url.slice(1, req.url.length);
+  res.locals = { ...res.locals, ...req.query }
+  next();
+}

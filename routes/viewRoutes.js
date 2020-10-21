@@ -23,11 +23,14 @@ router.get(
   views.history
 );
 
+router.get("/buy-airtime/summary", authController.protect, views.useSummaryLayout, views.airtimeSummary);
+
 router.use(authController.isLoggedIn);
 
 router.get("/", views.home);
 
 router.get("/buy-airtime", views.home);
+
 router.get("/buy-data", views.dataBundle);
 router.get("/fund-wallet", views.fundWallet);
 

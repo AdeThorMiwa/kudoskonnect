@@ -43,7 +43,6 @@ exports.makeAirtimePurchase = async (productId, phone, amount, ref, hash) => {
       ],
     })
   );
-  console.log(res.data);
   if (res.data.failed !== 0) throw new Error(res.data.message);
 
   return res.data.result[0];

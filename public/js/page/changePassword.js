@@ -9,7 +9,7 @@ const changePassword = async (formData) => {
       `Password Updated Successfully!`
     );
   } catch (e) {
-    alert.error(res.message);
+    alert.error(e.message);
   }
 };
 

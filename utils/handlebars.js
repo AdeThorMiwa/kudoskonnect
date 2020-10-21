@@ -13,3 +13,5 @@ exports.getWalletBalanceFrom = (user) => (user ? user.wallet : 0);
 exports.getFullNameFrom = (user) => user ? user.fullname : "";
 exports.getMobileFrom = (user) => user ? user.phone : "";
 exports.getEmailFrom = (user) => user ? user.email : "";
+
+exports.getAmountByRate = (amount, rate) => amount * rate;

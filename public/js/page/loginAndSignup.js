@@ -11,7 +11,7 @@ const loginUser = async (email, password) => {
     alert.success("Login Successful.");
     setTimeout(() => location.assign("/"), 2000);
   } catch (e) {
-    alert.error(res.message);
+    alert.error(e.message);
   }
 };
 
