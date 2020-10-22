@@ -1,8 +1,6 @@
-const {
-  getAllNetworks,
-  getMobileNetworks,
-} = require("./../utils/transactionApi");
+const crypto = require("./../utils/crypto");
 const tabIntros = require("./../constants/tabIntro");
+const cables = require("../constants/cables");
 
 exports.home = (req, res, next) => {
   const page = req.url.slice(1, req.url.length);
@@ -28,7 +26,25 @@ exports.fundWallet = (req, res, next) => {
     page,
     title: "Fund Wallet",
     tabContent: tabIntros[page],
-    networks: getAllNetworks(),
+  });
+};
+
+exports.transferFund = (req, res, next) => {
+  const page = req.url.slice(1, req.url.length);
+  res.render("pages/transferFund", {
+    page,
+    title: "Transfer Fund",
+    tabContent: tabIntros[page],
+  });
+};
+
+exports.cableTv = (req, res, next) => {
+  const page = req.url.slice(1, req.url.length);
+  res.render("pages/cableTv", {
+    page,
+    title: "Cable Tv",
+    tabContent: tabIntros[page],
+    cables: cables
   });
 };
 
@@ -90,6 +106,12 @@ exports.airtimeSummary = (req, res, next) => {
 exports.dataSummary = (req, res, next) => {
   res.render("pages/summary/data", {
     title: "Data Bundle",
+  });
+}
+
+exports.transferSummary = (req, res, next) => {
+  res.render("pages/summary/transfer", {
+    title: "Fund Transfer",
   });
 }
 

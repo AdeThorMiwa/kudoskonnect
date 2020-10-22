@@ -24,6 +24,7 @@
     "express-handlebars": "^5.1.0",
     "express-validator": "^6.4.0",
     "firebase": "^7.24.0",
+    "form-data": "^3.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.11",
     "morgan": "^1.9.1",

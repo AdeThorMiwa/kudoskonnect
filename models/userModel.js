@@ -185,23 +185,28 @@ userSchema.methods.createPasswordResetToken = function () {
 };
 
 userSchema.methods.creditWallet = async function (amount) {
-  this.wallet = (this.wallet || 0) + amount;
+  this.wallet = Number((this.wallet || 0)) + Number(amount);
   return await this.save({ validateBeforeSave: false });
 };
 
 userSchema.methods.debitWallet = async function (amount) {
-  this.wallet = (this.wallet || 0) - amount;
+  this.wallet = Number((this.wallet || 0)) - amount;
   return await this.save({ validateBeforeSave: false });
 };
 
 userSchema.methods.transferFund = async function (amount, to) {
   // transfer the money to receiver
-  const receiver = await this.constructor.findById(to);
+  const receiver = await this.constructor.findByMobile(to);
   await receiver.creditWallet(amount);
 
   // if successful deduct money from user wallet
-  return await this.debitWallet(amount);
+  await this.debitWallet(amount);
+  return receiver;
 };
+
+userSchema.statics.findByMobile = async function (phone) {
+  return this.findOne({ phone })
+}
 
 const User = mongoose.model("User", userSchema);
 

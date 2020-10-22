@@ -12,10 +12,13 @@ const {
   makeDataPurchase,
   getDataProductList,
   getDataValue,
+  getCablePlansFor,
+  makeCablePurchase
 } = require("./../utils/transactionApi");
 const factory = require("./../factory/DBFactory");
 
-const Transactions = require("./../models/userModel");
+const Transactions = require("./../models/TransactionModel");
+const cables = require("../constants/cables");
 
 exports.get = factory.getAll(Transactions);
 
@@ -44,6 +47,24 @@ exports.getAvailablePlans = catchAsync(async (req, res, next) => {
       operator: info.operator,
       plans: products
     },
+  });
+})
+
+exports.getAvailableCables = (req, res, next) => {
+  res.status(201).json({
+    status: "success",
+    data: cables
+  });
+}
+
+exports.getCablePlans = catchAsync(async (req ,res, next) => {
+  const { cable, number } = req.body;
+  if(!cable || !number) return next(new AppError("Invalid Inputs"));
+
+  const data = await getCablePlansFor(cable, number)
+  res.status(201).json({
+    status: "success",
+    data: data
   });
 })
 
@@ -131,6 +152,98 @@ exports.buyData = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.transferFund = catchAsync(async (req, res, next) => {
+  const { amount, to } = req.body;
+  if (!to) return next(new AppError("Please specify a receiver", 400));
+  if (!amount) return next(new AppError("Please specify an amount", 400));
+
+  const { _id: id, fullname, phone } = await req.user.transferFund(amount, to);
+
+  const transaction = await Transactions.create({
+    transactionId: crypto.genRandomId(),
+    status: "ORDER_COMPLETED",
+    type: "transfer_fund",
+    trx_detail: {
+      user: { id, fullname, phone },
+    },
+    orderType: `${amount} Fund Transfer`,
+    amount: amount,
+    amountCharged: amount,
+    walletBalance: (req.user.wallet || 0) - amount,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      transaction,
+    },
+  });
+});
+
+exports.cableTV = catchAsync(async (req, res, next) => {
+  const { cable, plan, number } = req.body;
+
+  if (!cable || !plan || !number) {
+    return next(new AppError("Invalid Inputs!"));
+  }
+
+  const { response, transaction_id, discounted_amount } = await makeCablePurchase(cable, plan, number);
+
+  const transaction = await Transactions.create({
+    transactionId: transaction_id,
+    status: response,
+    type: "cable",
+    trx_detail: {
+      cable,
+      plan,
+      number,
+    },
+    orderType: `${getDataValue(data_amount)} Data Purchase`,
+    amount: discounted_amount,
+    amountCharged: discounted_amount,
+    walletBalance: (req.user.wallet || 0) - discounted_amount,
+  });
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      transaction,
+    },
+  });
+});
+
+exports.rechargeCard = catchAsync(async (req, res, next) => {
+  const { network, amount, order_quantity } = req.body;
+
+  if (!network || !amount || !order_quantity) {
+    return next(new AppError("Invalid Inputs!"));
+  }
+
+  const response = await axios(
+    `${process.env.CLUB_KONNECT}/APIEPINV1.asp?UserID=${process.env.CLUB_KONNECT_USER_ID}&APIKey=${process.env.CLUB_KONNECT_API_KEY}&MobileNetwork=${network}&Value=${amount}&Quantity=${order_quantity}`
+  );
+
+  const transaction = await Transactions.create({
+    orderId: crypto.randomBytes(12).toString("hex"),
+    status: "ORDER_COMPLETED",
+    type: "recharge_card",
+    trx_detail: {
+      TXN_EPIN: [...response.data.TXN_EPIN],
+    },
+    orderType: `${amount} ${getMobileNetwork(network)} Recharge PIN Print`,
+    amount,
+    amountCharged: amount - 5, // FIXME: get amount charged and update
+    walletBalance: (req.user.wallet || 0) - amount,
+  });
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      transaction,
+    },
+  });
+});
+
 exports.electricBill = catchAsync(async (req, res, next) => {
   const { electric_company_code, meter_type, meter_no, amount } = req.body;
 
@@ -167,64 +280,6 @@ exports.electricBill = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.cableTV = catchAsync(async (req, res, next) => {
-  const { phone, amount, network } = req.body;
-
-  if (!phone || !amount || !network) {
-    return next(new AppError("Invalid Inputs!"));
-  }
-
-  // FIXME: input the appropriate params
-  const { status } = await sendApiRequest(
-    "APIElectricityV1",
-    `&APICableTVV1=${electric_company_code}&MeterType=${meter_type}&MeterNo=${meter_no}&Amount=${amount}`
-  );
-
-  console.log(response);
-});
-
-exports.rechargeCard = catchAsync(async (req, res, next) => {
-  const { network, amount, order_quantity } = req.body;
-
-  if (!network || !amount || !order_quantity) {
-    return next(new AppError("Invalid Inputs!"));
-  }
-
-  const response = await axios(
-    `${process.env.CLUB_KONNECT}/APIEPINV1.asp?UserID=${process.env.CLUB_KONNECT_USER_ID}&APIKey=${process.env.CLUB_KONNECT_API_KEY}&MobileNetwork=${network}&Value=${amount}&Quantity=${order_quantity}`
-  );
-
-  const transaction = await Transactions.create({
-    orderId: crypto.randomBytes(12).toString("hex"),
-    status: "ORDER_COMPLETED",
-    type: "recharge_card",
-    trx_detail: {
-      TXN_EPIN: [...response.data.TXN_EPIN],
-    },
-    orderType: `${amount} ${getMobileNetwork(network)} Recharge PIN Print`,
-    amount,
-    amountCharged: amount - 5, // FIXME: get amount charged and update
-    walletBalance: (req.user.wallet || 0) - amount,
-  });
-
-  res.status(201).json({
-    status: "success",
-    data: {
-      transaction,
-    },
-  });
-});
-
-exports.transferFund = catchAsync(async (req, res, next) => {
-  const { amount, to } = req.body;
-  if (!to) return next(new AppError("Please specify a receiver", 400));
-  if (!amount) return next(new AppError("Please specify an amount", 400));
-
-  await req.user.transferFund(amount, req.body.to);
-  res.status(200).json({
-    status: "success",
-  });
-});
 
 exports.hasSufficientFund = (req, res, next) => {
   if (!(req.user.wallet >= req.body.amount))

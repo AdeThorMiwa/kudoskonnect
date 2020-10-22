@@ -25,15 +25,17 @@ router.get(
 
 router.get("/buy-airtime/summary", authController.protect, views.useSummaryLayout, views.airtimeSummary);
 router.get("/buy-data/summary", authController.protect, views.useSummaryLayout, views.dataSummary);
+router.get("/fund-transfer/summary", authController.protect, views.useSummaryLayout, views.transferSummary);
 
 router.use(authController.isLoggedIn);
 
 router.get("/", views.home);
 
 router.get("/buy-airtime", views.home);
-
 router.get("/buy-data", views.dataBundle);
 router.get("/fund-wallet", views.fundWallet);
+router.get("/transfer-fund", views.transferFund);
+router.get("/cable-tv", views.cableTv);
 
 router.use(views.usePagesLayout);
 
