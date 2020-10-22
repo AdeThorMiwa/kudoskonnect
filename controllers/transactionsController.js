@@ -58,13 +58,65 @@ exports.getAvailableCables = (req, res, next) => {
 }
 
 exports.getCablePlans = catchAsync(async (req ,res, next) => {
-  const { cable, number } = req.body;
+  const { cable, number } = req.query;
   if(!cable || !number) return next(new AppError("Invalid Inputs"));
 
-  const data = await getCablePlansFor(cable, number)
+  // const data = await getCablePlansFor(cable, number)
   res.status(201).json({
     status: "success",
-    data: data
+    data: {
+   "first_name":"A A",
+   "last_name":"GEORGE",
+   "status":"Active",
+   "primary_product_id":"BPD-DSTV-971",
+   "primary_product_name":"DStv Padi ",
+   "primary_product_price":"1850.00",
+   "primary_product_currency":"NGN",
+   "plans":[
+             {
+               "plan_id":"BPD-DSTV-921",
+               "name":"Premium",
+               "price":"18400",
+               "currency":"NGN"
+             },
+             
+             {
+               "plan_id":"BPD-DSTV-931",
+               "name":"Compact Plus",
+               "price":"12400",
+               "currency":"NGN"
+             },
+             
+             {
+               "plan_id":"BPD-DSTV-941",
+               "name":"Compact ",
+               "price":"7900",
+               "currency":"NGN"
+             },
+             
+             {
+               "plan_id":"BPD-DSTV-951",
+               "name":"Confam",
+               "price":"4615",
+               "currency":"NGN"
+             },
+             
+             {
+                "plan_id":"BPD-DSTV-961",
+                "name":"Yanga",
+                "price":"2565",
+                "currency":"NGN"
+            },
+            
+            {
+            
+               "plan_id":"BPD-DSTV-971",
+               "name":"Padi",
+               "price":"1850",
+               "currency":"NGN"
+            }
+       ]
+}
   });
 })
 

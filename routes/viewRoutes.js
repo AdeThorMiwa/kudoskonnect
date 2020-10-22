@@ -26,6 +26,7 @@ router.get(
 router.get("/buy-airtime/summary", authController.protect, views.useSummaryLayout, views.airtimeSummary);
 router.get("/buy-data/summary", authController.protect, views.useSummaryLayout, views.dataSummary);
 router.get("/fund-transfer/summary", authController.protect, views.useSummaryLayout, views.transferSummary);
+router.get("/cable-tv/summary", authController.protect, views.useSummaryLayout, views.cableSummary);
 
 router.use(authController.isLoggedIn);
 

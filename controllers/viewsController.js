@@ -115,6 +115,12 @@ exports.transferSummary = (req, res, next) => {
   });
 }
 
+exports.cableSummary = (req, res, next) => {
+  res.render("pages/summary/cable", {
+    title: "Cable Subscription",
+  });
+}
+
 exports.usePagesLayout = (req, res, next) => {
   res.locals.layout = "pages";
   res.locals.page = req.url.slice(1, req.url.length);
