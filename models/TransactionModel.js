@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 const transactionSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+    required: true,
+  },
   transactionId: {
     type: String,
     required: true,
@@ -8,7 +13,14 @@ const transactionSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
-    enum: ["airtime", "data_bundle", "transfer_fund", "cable", "electricity", "recharge_card"],
+    enum: [
+      "airtime",
+      "data_bundle",
+      "transfer_fund",
+      "cable",
+      "electricity",
+      "recharge_card",
+    ],
   },
   status: {
     type: String,

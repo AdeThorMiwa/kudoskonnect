@@ -93,6 +93,7 @@ exports.buyAirtime = catchAsync(async (req, res, next) => {
   } = await makeAirtimePurchase(products[0].id, phone, amount, ref, hash);
 
   const transaction = await Transactions.create({
+    userId: req.user.id,
     transactionId: transaction_id,
     status: response,
     type: "airtime",
@@ -136,6 +137,7 @@ exports.buyData = catchAsync(async (req, res, next) => {
   } = await makeDataPurchase(plan, phone, ref, hash);
 
   const transaction = await Transactions.create({
+    userId: req.user.id,
     transactionId: transaction_id,
     status: response,
     type: "data_bundle",
@@ -166,6 +168,7 @@ exports.transferFund = catchAsync(async (req, res, next) => {
   const { _id: id, fullname, phone } = await req.user.transferFund(amount, to);
 
   const transaction = await Transactions.create({
+    userId: req.user.id,
     transactionId: crypto.genRandomId(),
     status: "ORDER_COMPLETED",
     type: "transfer_fund",
@@ -200,6 +203,7 @@ exports.cableTV = catchAsync(async (req, res, next) => {
   } = await makeCablePurchase(cable, plan, number);
 
   const transaction = await Transactions.create({
+    userId: req.user.id,
     transactionId: transaction_id,
     status: response,
     type: "cable",
@@ -236,6 +240,7 @@ exports.electricBill = catchAsync(async (req, res, next) => {
   } = await makeCablePurchase(cable, plan, number);
 
   const transaction = await Transactions.create({
+    userId: req.user.id,
     transactionId: transaction_id,
     status: response,
     type: "cable",
@@ -268,5 +273,11 @@ exports.hasSufficientFund = (req, res, next) => {
 
 exports.aliasUserHistory = (req, res, next) => {
   req.query.user = req.user.id;
+  next();
+};
+
+exports.aliasUserHistoryById = (req, res, next) => {
+  console.log(req.params.id);
+  req.query.user = req.params.id;
   next();
 };
