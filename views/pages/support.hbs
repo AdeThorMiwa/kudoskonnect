@@ -2,19 +2,19 @@
     <div class="col-lg-8">
         <div class="bg-light shadow-md rounded p-4">
             <h2 class="text-6">Send a Request</h2>
-            <p>Please fill out the form below and we promise you to get back to you within a couple of hours.</p>
-            <form id="recharge-bill" method="post">
+            <p>Please fill out the form below and we promise you to get back to you soon.</p>
+            <form id="support-form" method="post">
                 <div class="form-group">
                     <label for="subject">Subject</label>
                     <select class="custom-select" id="subject" required="">
                         <option value="">Select Your Subject</option>
-                        <option>Airtime</option>
-                        <option>Data Bundle</option>
-                        <option>Cable TV</option>
-                        <option>Electric Bill</option>
-                        <option>Wallet Funding</option>
-                        <option>Fund Transfer</option>
-                        <option>Other</option>
+                        <option value="airtime">Airtime</option>
+                        <option value="data_bundle">Data Bundle</option>
+                        <option value="cable_tv">Cable TV</option>
+                        <option value="electric_bill">Electric Bill</option>
+                        <option value="wallet_funding">Wallet Funding</option>
+                        <option value="fund_transfer">Fund Transfer</option>
+                        <option value="others">Other</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -27,7 +27,7 @@
                 </div>
                 <div class="form-group">
                     <label for="mobileNumber">Mobile Number</label>
-                    <input type="text" class="form-control" data-bv-field="number" id="mobileNumber" required
+                    <input type="text" class="form-control" data-bv-field="number" id="mobileNumber"
                         placeholder="Enter Mobile Number">
                 </div>
                 <div class="form-group">
@@ -121,3 +121,26 @@
         </div>
     </div>
 </div>
+<script>
+    const sendSupportRequest = async (e) => {
+        e.preventDefault()
+        const subject = document.querySelector("#subject").value
+        const name = document.querySelector("#yourName").value
+        const email = document.querySelector("#yourEmail").value
+        const phone = document.querySelector("#mobileNumber").value
+        const query = document.querySelector("#yourProblem").value;
+
+        try {
+            const res = await fetcher.post(`/api/site/support`, { subject, name, email, phone, query });
+
+            if (res.status === "fail" || res.status === "error")
+                return alert.error(res.message);
+
+            alert.success("Support request sent Successfully. We'll get back to you soon.")
+        } catch (e) {
+            alert.error(e.message);
+        }
+    }
+
+    document.querySelector("#support-form").addEventListener("submit", sendSupportRequest)
+</script>

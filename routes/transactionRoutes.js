@@ -26,6 +26,7 @@ router.get("/get-mobile-network", transactionsController.getMobileNetwork)
 router.get("/get-available-plans", transactionsController.getAvailablePlans)
 router.get("/get-available-cables", transactionsController.getAvailableCables)
 router.get("/get-cable-plans", transactionsController.getCablePlans)
+router.get("/get-available-electricity", transactionsController.getAvailableElectricity)
 
 /**
  * Check if user has sufficient fund to perform transaction
@@ -41,10 +42,8 @@ router.get("/get-cable-plans", transactionsController.getCablePlans)
 
 router.post("/buy-airtime", transactionsController.buyAirtime);
 router.post("/buy-data", transactionsController.buyData);
-// TODO: deposit fund 
 router.post("/transfer-fund", transactionsController.transferFund);
 router.post("/pay-cable-tv", transactionsController.cableTV);
 router.post("/pay-electric-bill", transactionsController.electricBill);
-router.post("/recharge-card", transactionsController.rechargeCard);
 
 module.exports = router;

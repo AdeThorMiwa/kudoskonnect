@@ -37,6 +37,7 @@ router.get("/buy-data", views.dataBundle);
 router.get("/fund-wallet", views.fundWallet);
 router.get("/transfer-fund", views.transferFund);
 router.get("/cable-tv", views.cableTv);
+router.get("/electric-bill", views.electricBill);
 
 router.use(views.usePagesLayout);
 

@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Please provide your phone number"],
     minlength: 8,
-    unique: true
+    unique: true,
   },
   role: {
     type: String,
@@ -185,12 +185,12 @@ userSchema.methods.createPasswordResetToken = function () {
 };
 
 userSchema.methods.creditWallet = async function (amount) {
-  this.wallet = Number((this.wallet || 0)) + Number(amount);
+  this.wallet = Number(this.wallet || 0) + Number(amount);
   return await this.save({ validateBeforeSave: false });
 };
 
 userSchema.methods.debitWallet = async function (amount) {
-  this.wallet = Number((this.wallet || 0)) - amount;
+  this.wallet = Number(this.wallet || 0) - amount;
   return await this.save({ validateBeforeSave: false });
 };
 
@@ -205,8 +205,8 @@ userSchema.methods.transferFund = async function (amount, to) {
 };
 
 userSchema.statics.findByMobile = async function (phone) {
-  return this.findOne({ phone })
-}
+  return this.findOne({ phone });
+};
 
 const User = mongoose.model("User", userSchema);
 

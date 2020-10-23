@@ -10,6 +10,7 @@ const express_handlebar = require("express-handlebars");
 const viewRoutes = require("./routes/viewRoutes");
 const userRoutes = require("./routes/userRoutes");
 const transactionRoutes = require("./routes/transactionRoutes");
+const siteRoutes = require("./routes/siteRoutes");
 /**
  * Initialize Express
  */
@@ -48,6 +49,7 @@ app.use("/", viewRoutes);
  */
 app.use("/api/user", userRoutes);
 app.use("/api/transaction", transactionRoutes);
+app.use("/api/site", siteRoutes);
 
 /**
  *  404 Error Handler (if no route matches)

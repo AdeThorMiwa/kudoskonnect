@@ -48,6 +48,15 @@ exports.cableTv = (req, res, next) => {
   });
 };
 
+exports.electricBill = (req, res, next) => {
+  const page = req.url.slice(1, req.url.length);
+  res.render("pages/electricBill", {
+    page,
+    title: "Electricity Bill",
+    tabContent: tabIntros[page],
+  });
+};
+
 exports.auth = (req, res, next) => {
   res.render("pages/loginAndSignUp", {
     title: "Login / Sign Up",

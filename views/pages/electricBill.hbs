@@ -1,0 +1,40 @@
+<div class="col-lg-4 mb-4 mb-lg-0">
+    <h2 class="text-4 mb-3">Pay your Electricity Bill</h2>
+    <form id="electricityBill" method="post">
+        <div class="form-group">
+            <select class="custom-select" id="operator" required="">
+                <option value="">Select Your Operator</option>
+                <option>1st Operator</option>
+                <option>2nd Operator</option>
+                <option>3rd Operator</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <select class="custom-select" id="yourState" required="">
+                <option value="">Select Your State</option>
+                <option>1st State</option>
+                <option>2nd State</option>
+                <option>3rd State</option>
+                <option>4th State</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" data-bv-field="number" id="serviceNumber" required
+                placeholder="Enter Service Number">
+        </div>
+        <div class="form-group input-group">
+            <div class="input-group-prepend"> <span class="input-group-text">$</span> </div>
+            <input class="form-control" id="amount" placeholder="Enter Amount" required type="text">
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Continue</button>
+    </form>
+</div>
+
+<!-- Slideshow -->
+<div class="col-lg-8">
+    <div class="owl-carousel owl-theme single-slider" data-animateout="fadeOut" data-animatein="fadeIn"
+        data-autoplay="true" data-loop="true" data-autoheight="true" data-nav="true" data-items="1">
+        <div class="item"><a href="#"><img class="img-fluid" src="images/slider/banner-6.jpg" alt="banner 5" /></a>
+        </div>
+    </div>
+</div>

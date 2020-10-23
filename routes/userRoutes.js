@@ -62,6 +62,4 @@ router.patch(
   userController.updateUser
 );
 
-// router.get("/stats", userController.stats);
-
 module.exports = router;

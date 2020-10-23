@@ -149,12 +149,23 @@ exports.makeCablePurchase = async (product, plan, number) => {
   }catch(e) { throw e }
 }
 
-exports.getElectricCompany = async (companyCode) => {
-  // REVIEW: confirm api authenticity
-  const companies = await axios(
-    `https://www.nellobytesystems.com/APIElectricityDiscosV1.asp`
-  );
-  return companies[companyCode];
+exports.getElectricCompany = async () => {
+  const hash = crypto.generateHash();
+
+  const data = {
+    username: process.env.ESTORE_USERNAME,
+    hash,
+    category: "electricity",
+  }
+  
+  try{
+    const res = await axiosForm("https://estoresms.com/bill_payment_processing/v/2/", data)
+    
+    if (res.data.response !== "OK")
+      throw new Error(`Error Making Purchase: ${res.data.message}`);
+
+    return res.data;
+  }catch(e) { throw e }
 };
 
 exports.convertToGigaRate = (megaRate) => {
