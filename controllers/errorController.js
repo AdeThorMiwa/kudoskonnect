@@ -46,6 +46,13 @@ const sendErrorDev = (err, req, res) => {
       statusCode: err.statusCode,
     });
 
+  if (err.statusCode === 401)
+    return res.status(err.statusCode).render("pages/loginAndSignUp", {
+      title: "Login",
+      msg: err.message,
+      statusCode: err.statusCode,
+    });
+
   return res.status(err.statusCode).render("pages/error/index", {
     title: `Error ${err.statusCode}`,
     msg: err.message,
@@ -82,6 +89,14 @@ const sendErrorProd = (err, req, res) => {
       msg: err.message,
       statusCode: err.statusCode,
     });
+
+  if (err.statusCode === 401)
+    return res.status(err.statusCode).render("pages/loginAndSignUp", {
+      title: "Login",
+      msg: err.message,
+      statusCode: err.statusCode,
+    });
+
   // B) Operational, trusted error: send message to client
   if (err.isOperational) {
     return res.status(err.statusCode).render("pages/error/index", {

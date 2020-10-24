@@ -49,6 +49,7 @@ router.get(
 );
 
 router.get("/fund-wallet", authController.protect, views.fundWallet);
+router.get("/transfer-fund", authController.protect, views.transferFund);
 
 router.use(authController.isLoggedIn);
 
@@ -56,7 +57,6 @@ router.get("/", views.home);
 
 router.get("/buy-airtime", views.home);
 router.get("/buy-data", views.dataBundle);
-router.get("/transfer-fund", views.transferFund);
 router.get("/cable-tv", views.cableTv);
 router.get("/electric-bill", views.electricBill);
 

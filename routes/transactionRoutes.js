@@ -13,7 +13,6 @@ router.get(
   transactionsController.getAvailableElectricity
 ); //REVIEW:
 
-
 /**
  * Protected Routes
  * Only authenticated user can access these routes
@@ -43,7 +42,7 @@ router.get(
  * Check if user has sufficient fund to perform transaction
  * Only users with sufficient funds can access the below routes
  */
-// router.use(transactionsController.hasSufficientFund);
+router.use(transactionsController.hasSufficientFund);
 
 /**
  * Transactions

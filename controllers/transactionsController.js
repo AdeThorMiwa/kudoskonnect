@@ -127,6 +127,12 @@ exports.buyData = catchAsync(async (req, res, next) => {
 
   const { products, info } = await getDataProductList(phone, hash);
 
+  const planData = products.find((product) => product.id === plan);
+  if (req.user.wallet < planData.price)
+    return next(
+      new AppError("Insufficient fund. Please fund account and try again.")
+    );
+
   hash = crypto.generateHash(ref);
   const {
     response,
@@ -144,7 +150,7 @@ exports.buyData = catchAsync(async (req, res, next) => {
     trx_detail: {
       mobileNetwork: info,
       mobileNumber: phone,
-      plan: products.find(product.id === plan),
+      plan: planData,
     },
     orderType: `${getDataValue(data_amount)} Data Purchase`,
     amount: amount,
@@ -264,7 +270,7 @@ exports.electricBill = catchAsync(async (req, res, next) => {
 });
 
 exports.hasSufficientFund = (req, res, next) => {
-  if (!(req.user.wallet >= req.body.amount))
+  if (req.body.amount && !(req.user.wallet >= req.body.amount))
     return next(
       new AppError("Insufficient fund. Please fund account and try again.")
     );
