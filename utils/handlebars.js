@@ -20,3 +20,30 @@ exports.getTransactions = (type, transactions) =>
   transactions.filter((trx) => trx.type === type || type === "all");
 
 exports.getMeterType = (type) => (type === "01" ? "PrePaid" : "PostPaid");
+
+// transaction handles
+exports.getTransactionValue = (trx, value) => {
+  if (value === "date") {
+    var months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sept",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+
+    var days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+    const d = new Date(trx.date);
+    return `${days[d.getDay()]} ${
+      months[d.getMonth()]
+    } ${d.getDate()} ${d.getFullYear()}`;
+  }
+  return trx[value];
+};

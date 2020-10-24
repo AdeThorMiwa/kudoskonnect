@@ -3,19 +3,21 @@
         <table class="table table-hover border">
             <thead class="thead-light">
                 <tr>
-                    <th>Date</th>
+                    <th>Date {{trx_type}}</th>
                     <th>Description</th>
                     <th>Transaction ID</th>
                     <th class="text-center">Status</th>
                     <th class="text-right">Amount</th>
-                    <th class="text-center"></th>
+                    <!-- <th class="text-center"></th> -->
                 </tr>
             </thead>
             <tbody>
-                {{#each transactions }}
-
-                {{> table/historyRow }}
-
+                {{#each (getTransactions trx_type transactions) }}
+                {{> table/historyRow transaction=this }}
+                {{else }}
+                <tr>
+                    <td colspan="6" class="text-center">No Transaction Available...</td>
+                </tr>
                 {{/each }}
             </tbody>
         </table>
