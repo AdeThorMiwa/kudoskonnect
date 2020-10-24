@@ -1,13 +1,15 @@
 const crypto = require("./../utils/crypto");
 const tabIntros = require("./../constants/tabIntro");
 const cables = require("../constants/cables");
+const catchAsync = require("../utils/catchAsync");
+const Transaction = require("../models/TransactionModel");
 
 exports.home = (req, res, next) => {
   const page = req.url.slice(1, req.url.length);
   res.render("pages/home", {
     page,
     title: "Buy Airtime",
-    tabContent: tabIntros[page]
+    tabContent: tabIntros[page],
   });
 };
 
@@ -16,7 +18,7 @@ exports.dataBundle = (req, res, next) => {
   res.render("pages/data-bundle", {
     page,
     title: "Buy Data Bundle",
-    tabContent: tabIntros[page]
+    tabContent: tabIntros[page],
   });
 };
 
@@ -26,6 +28,8 @@ exports.fundWallet = (req, res, next) => {
     page,
     title: "Fund Wallet",
     tabContent: tabIntros[page],
+    key: "pk_test_e8eae984c164ece18df37a86319a29918b5e7dec",
+    ref: crypto.genRandomId(),
   });
 };
 
@@ -44,7 +48,7 @@ exports.cableTv = (req, res, next) => {
     page,
     title: "Cable Tv",
     tabContent: tabIntros[page],
-    cables: cables
+    cables: cables,
   });
 };
 
@@ -75,12 +79,14 @@ exports.changePassword = (req, res, next) => {
   });
 };
 
-exports.history = (req, res, next) => {
+exports.history = catchAsync(async (req, res, next) => {
+  const transactions = await Transaction.find();
   res.render("pages/history", {
     title: "Transaction History",
     noSideDetail: true,
+    transactions,
   });
-};
+});
 
 exports.about = (req, res, next) => {
   res.render("pages/about", {
@@ -110,25 +116,25 @@ exports.airtimeSummary = (req, res, next) => {
   res.render("pages/summary/airtime", {
     title: "Airtime",
   });
-}
+};
 
 exports.dataSummary = (req, res, next) => {
   res.render("pages/summary/data", {
     title: "Data Bundle",
   });
-}
+};
 
 exports.transferSummary = (req, res, next) => {
   res.render("pages/summary/transfer", {
     title: "Fund Transfer",
   });
-}
+};
 
 exports.cableSummary = (req, res, next) => {
   res.render("pages/summary/cable", {
     title: "Cable Subscription",
   });
-}
+};
 
 exports.usePagesLayout = (req, res, next) => {
   res.locals.layout = "pages";
@@ -142,9 +148,9 @@ exports.useProfileLayout = (req, res, next) => {
   next();
 };
 
-exports.useSummaryLayout = (req, res, next ) => {
+exports.useSummaryLayout = (req, res, next) => {
   res.locals.layout = "summary";
   res.locals.page = req.url.slice(1, req.url.length);
-  res.locals = { ...res.locals, ...req.query }
+  res.locals = { ...res.locals, ...req.query };
   next();
-}
+};

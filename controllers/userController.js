@@ -1,8 +1,10 @@
 const User = require("./../models/userModel");
+const Transaction = require("../models/TransactionModel");
+
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require("./../utils/appError");
 const factory = require("./../factory/DBFactory");
-const paystack = require("../paystack");
+const payStack = require("../paystack");
 
 // TODO: normalize the response format -> turn it all to { data :data}
 const filterObj = (obj, ...allowedFields) => {
@@ -89,48 +91,47 @@ exports.updateStatus = (status) => (req, res, next) => {
 
 exports.fundWallet = catchAsync(async (req, res, next) => {
   const ref = req.body.ref;
-  const transactionVerified = await Transaction.findOne({ ref });
-  if (transactionVerified) {
-    return res.json({
-      status: "error",
-      message: "payment has already been verified",
-    });
-  }
-  const key = process.env.PAYSTACK_KEY;
-  paystack(key).transaction.verify(ref, async (error, body) => {
-    if (error) return res.json({ status: "error", message: error.message });
-    // if(body.data.domain != 'test') console.log(body.data.amount)
-    if (body.data) {
-      const transactionData = {
-        user: req.user.id,
-        type: "Wallet Funding",
-        amount: String(body.data.amount).slice(0, -2),
-        status: body.data.status,
-        ref: body.data.reference,
-      };
-      if (body.data.status === "success") {
-        const transaction = new Transaction(transactionData);
-        await transaction.save();
-        const user = await User.findById(req.user.id);
-        const newWallet =
-          parseInt(user.wallet) + parseInt(transactionData.amount);
-        const updateWallet = await User.findOneAndUpdate(
-          { _id: req.user.id },
-          { $set: { wallet: newWallet } },
-          { returnNewDocument: true }
+  const trxVerified = await Transaction.findOne({ ref });
+
+  if (trxVerified) return next(new AppError("Payment Already Verified.", 400));
+
+  payStack(process.env.PAYSTACK_SEC_KEY).transaction.verify(
+    ref,
+    async (error, body) => {
+      if (error) return next(new AppError(error.message, 500));
+
+      const { id, amount, status } = body.data;
+
+      if (!body.data || status !== "success")
+        return next(
+          new AppError(
+            "Payment Failed! Kindly contact our customer care if you have any complain.",
+            500
+          )
         );
-        return res.json({
-          status: "success",
-          message: "Payment Made Successfully",
-        });
-      }
-      return res.json({
-        status: "fail",
-        message:
-          "Payment Failed! Kindly contact our customer care if you have any complain ",
+
+      const transaction = await Transaction.create({
+        ref,
+        userId: req.user.id,
+        transactionId: id,
+        status: status,
+        type: "fund_wallet",
+        orderType: `${amount} Fund Deposit`,
+        amount: amount,
+        amountCharged: amount + (body.fees || 0),
+        walletBalance: (req.user.wallet || 0) - amount,
+      });
+
+      req.user.creditWallet(amount);
+
+      res.status(201).json({
+        status: "success",
+        data: {
+          transaction,
+        },
       });
     }
-  });
+  );
 });
 
 exports.stats = catchAsync(async (req, res, next) => {

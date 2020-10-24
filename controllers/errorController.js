@@ -43,11 +43,13 @@ const sendErrorDev = (err, req, res) => {
     return res.status(err.statusCode).render("pages/error/404", {
       title: "Page Not Found",
       msg: err.message,
+      statusCode: err.statusCode,
     });
 
   return res.status(err.statusCode).render("pages/error/index", {
     title: `Error ${err.statusCode}`,
     msg: err.message,
+    statusCode: err.statusCode,
   });
 };
 
@@ -78,12 +80,14 @@ const sendErrorProd = (err, req, res) => {
     return res.status(404).render("pages/error/404", {
       title: "Page Not Found",
       msg: err.message,
+      statusCode: err.statusCode,
     });
   // B) Operational, trusted error: send message to client
   if (err.isOperational) {
     return res.status(err.statusCode).render("pages/error/index", {
       title: "Something went horribly wrong!",
       msg: err.message,
+      statusCode: err.statusCode,
     });
   }
   // C) Programming or other unknown error: don't leak error details

@@ -4,6 +4,16 @@ const authController = require("./../controllers/authController");
 
 const router = express.Router();
 
+router.get("/get-mobile-network", transactionsController.getMobileNetwork);
+router.get("/get-available-plans", transactionsController.getAvailablePlans);
+router.get("/get-available-cables", transactionsController.getAvailableCables);
+router.get("/get-cable-plans", transactionsController.getCablePlans);
+router.get(
+  "/get-available-electricity",
+  transactionsController.getAvailableElectricity
+); //REVIEW:
+
+
 /**
  * Protected Routes
  * Only authenticated user can access these routes
@@ -28,15 +38,6 @@ router.get(
   authController.restrictTo("role", "admin"),
   transactionsController.get
 );
-
-router.get("/get-mobile-network", transactionsController.getMobileNetwork);
-router.get("/get-available-plans", transactionsController.getAvailablePlans);
-router.get("/get-available-cables", transactionsController.getAvailableCables);
-router.get("/get-cable-plans", transactionsController.getCablePlans);
-router.get(
-  "/get-available-electricity",
-  transactionsController.getAvailableElectricity
-); //REVIEW:
 
 /**
  * Check if user has sufficient fund to perform transaction

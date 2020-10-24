@@ -10,8 +10,11 @@ exports.returnIfNotTrue = (condition, returnValue) =>
 exports.getDisplayNameFrom = (user) =>
   user ? user.fullname.split(" ")[0] : "";
 exports.getWalletBalanceFrom = (user) => (user ? user.wallet : 0);
-exports.getFullNameFrom = (user) => user ? user.fullname : "";
-exports.getMobileFrom = (user) => user ? user.phone : "";
-exports.getEmailFrom = (user) => user ? user.email : "";
+exports.getFullNameFrom = (user) => (user ? user.fullname : "");
+exports.getMobileFrom = (user) => (user ? user.phone : "");
+exports.getEmailFrom = (user) => (user ? user.email : "");
 
 exports.getAmountByRate = (amount, rate) => amount * rate;
+
+exports.getTransactions = (type, transactions) =>
+  transactions.filter((trx) => trx.type === type || type === "all");
