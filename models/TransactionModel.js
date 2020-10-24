@@ -32,6 +32,7 @@ const transactionSchema = new mongoose.Schema({
     uppercase: true,
     enum: [
       "SUCCESS",
+      "OK",
       "ORDER_RECEIVED",
       "ORDER_PROCESSED",
       "ORDER_COMPLETED",

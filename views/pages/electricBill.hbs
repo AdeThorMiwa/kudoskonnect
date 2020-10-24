@@ -1,30 +1,33 @@
 <div class="col-lg-4 mb-4 mb-lg-0">
     <h2 class="text-4 mb-3">Pay your Electricity Bill</h2>
-    <form id="electricityBill" method="post">
+    <form id="electricityBill" method="get" action="/electric-bill/summary">
         <div class="form-group">
-            <select class="custom-select" id="operator" required="">
-                <option value="">Select Your Operator</option>
-                <option>1st Operator</option>
-                <option>2nd Operator</option>
-                <option>3rd Operator</option>
+            <select class="custom-select" name="company" id="operator" required="">
+                <option value="">-- Electricity Company --</option>
+                {{#each providers }}
+                <option min="{{min_denomination}}" max="{{max_denomination}}" name="{{name}}" value="{{product_id}}">
+                    {{name}}</option>
+                {{/each }}
+            </select>
+            <input type="hidden" name="companyName" id="companyName">
+        </div>
+        <div class="form-group">
+            <select class="custom-select" name="meterType" id="meterType" required="">
+                <option value="">-- Meter Type --</option>
+                <option value="01">PrePaid</option>
+                <option value="02">PostPaid</option>
             </select>
         </div>
         <div class="form-group">
-            <select class="custom-select" id="yourState" required="">
-                <option value="">Select Your State</option>
-                <option>1st State</option>
-                <option>2nd State</option>
-                <option>3rd State</option>
-                <option>4th State</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" data-bv-field="number" id="serviceNumber" required
-                placeholder="Enter Service Number">
+            <input type="text" class="form-control" name="meterNo" data-bv-field="number" id="meterNo" required
+                placeholder="Enter Meter Number">
         </div>
         <div class="form-group input-group">
-            <div class="input-group-prepend"> <span class="input-group-text">$</span> </div>
-            <input class="form-control" id="amount" placeholder="Enter Amount" required type="text">
+            <div class="input-group-prepend"> <span class="input-group-text">₦</span> </div>
+            <span class="view-plans-link" data-toggle="tooltip" id="rangeOfValidAmount"
+                data-original-title="Range of valid amount">(0 -
+                0) </span>
+            <input class="form-control" name="amount" id="amount" placeholder="Enter Amount" required type="number">
         </div>
         <button class="btn btn-primary btn-block" type="submit">Continue</button>
     </form>
@@ -38,3 +41,20 @@
         </div>
     </div>
 </div>
+<script>
+    const setAmountRange = (e) => {
+        const option = [...e.target].find(option => option.selected)
+
+        const min = option.getAttribute("min")
+        const max = option.getAttribute("max")
+
+        document.querySelector("#companyName").value = option.getAttribute("name");
+
+        document.querySelector("#amount").min = min
+        document.querySelector("#amount").max = max
+
+        document.querySelector("#rangeOfValidAmount").innerText = `(${min} - ${max.toLocaleString()})`;
+    }
+
+    document.querySelector("#operator").addEventListener("change", setAmountRange)
+</script>

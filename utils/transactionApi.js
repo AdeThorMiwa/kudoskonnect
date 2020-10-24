@@ -1,30 +1,27 @@
 const axios = require("axios");
-const FormData = require("form-data")
+const FormData = require("form-data");
 const crypto = require("./../utils/crypto");
 
 const axiosForm = async (url, params) => {
   const form = new FormData();
-  for(key in params) form.append(key, params[key])
+  for (key in params) form.append(key, params[key]);
 
-  const getHeaders = (form) => new Promise((resolve, reject) => {
-        form.getLength((err, length) => {
-            if(err) return reject(err);
-            
-            resolve(Object.assign({'Content-Length': length}, form.getHeaders()));
-         });
+  const getHeaders = (form) =>
+    new Promise((resolve, reject) => {
+      form.getLength((err, length) => {
+        if (err) return reject(err);
+
+        resolve(Object.assign({ "Content-Length": length }, form.getHeaders()));
+      });
     });
 
-  try{
-    const headers = await getHeaders(form)
-    return await axios.post(
-      url,
-      form,
-      {headers:headers}
-    )
-  }catch(e) {
-    throw e
+  try {
+    const headers = await getHeaders(form);
+    return await axios.post(url, form, { headers: headers });
+  } catch (e) {
+    throw e;
   }
-}
+};
 
 exports.getAirtimeProductList = async (phone) => {
   const hash = crypto.generateHash();
@@ -65,7 +62,6 @@ exports.makeAirtimePurchase = async (productId, phone, amount, ref, hash) => {
   return res.data.result[0];
 };
 
-
 exports.getDataProductList = async (phone) => {
   const hash = crypto.generateHash();
   const res = await axios.post(
@@ -76,7 +72,7 @@ exports.getDataProductList = async (phone) => {
       phone,
     })
   );
-  
+
   if (res.data.response !== "OK")
     throw new Error(`Error getting Data Product List: ${res.data.message}`);
 
@@ -99,7 +95,7 @@ exports.makeDataPurchase = async (productId, phone, ref, hash) => {
       ],
     })
   );
-  
+
   if (res.data.failed !== 0) throw new Error(res.data.message);
 
   return res.data.result[0];
@@ -112,18 +108,23 @@ exports.getCablePlansFor = async (product, number) => {
     hash,
     category: "tv",
     product,
-    number
-  }
-  
-  try{
-    const res = await axiosForm("https://estoresms.com/bill_payment_processing/v/2/", data)
-    
+    number,
+  };
+
+  try {
+    const res = await axiosForm(
+      "https://estoresms.com/bill_payment_processing/v/2/",
+      data
+    );
+
     if (res.data.response !== "OK")
       throw new Error(`Error getting Data Product List: ${res.data.message}`);
 
     return res.data;
-  }catch(e) { throw e }
-}
+  } catch (e) {
+    throw e;
+  }
+};
 
 exports.makeCablePurchase = async (product, plan, number) => {
   const ref = crypto.genRandomId();
@@ -136,18 +137,23 @@ exports.makeCablePurchase = async (product, plan, number) => {
     category: "tv",
     product,
     plan,
-    number
-  }
-  
-  try{
-    const res = await axiosForm("https://estoresms.com/bill_payment_processing/v/2/", data)
-    
+    number,
+  };
+
+  try {
+    const res = await axiosForm(
+      "https://estoresms.com/bill_payment_processing/v/2/",
+      data
+    );
+
     if (res.data.response !== "OK")
       throw new Error(`Error Making Purchase: ${res.data.message}`);
 
     return res.data;
-  }catch(e) { throw e }
-}
+  } catch (e) {
+    throw e;
+  }
+};
 
 exports.getElectricCompany = async () => {
   const hash = crypto.generateHash();
@@ -156,16 +162,52 @@ exports.getElectricCompany = async () => {
     username: process.env.ESTORE_USERNAME,
     hash,
     category: "electricity",
-  }
-  
-  try{
-    const res = await axiosForm("https://estoresms.com/bill_payment_processing/v/2/", data)
-    
+  };
+
+  try {
+    const res = await axiosForm(
+      "https://estoresms.com/bill_payment_processing/v/2/",
+      data
+    );
+
     if (res.data.response !== "OK")
       throw new Error(`Error Making Purchase: ${res.data.message}`);
 
     return res.data;
-  }catch(e) { throw e }
+  } catch (e) {
+    throw e;
+  }
+};
+
+exports.makeElectricPayment = async (product, amount, number, prepaid) => {
+  const ref = crypto.genRandomId();
+  const hash = crypto.generateHash(ref);
+
+  console.log(product, amount, number, prepaid);
+  const data = {
+    username: process.env.ESTORE_USERNAME,
+    hash,
+    ref,
+    category: "electricity",
+    product,
+    amount,
+    number,
+    prepaid,
+  };
+
+  try {
+    const res = await axiosForm(
+      "https://estoresms.com/bill_payment_processing/v/2/",
+      data
+    );
+
+    if (res.data.response !== "OK")
+      throw new Error(`Error Making Payment: ${res.data.message}`);
+
+    return res.data;
+  } catch (e) {
+    throw e;
+  }
 };
 
 exports.convertToGigaRate = (megaRate) => {

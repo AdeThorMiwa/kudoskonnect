@@ -11,7 +11,7 @@ router.get("/get-cable-plans", transactionsController.getCablePlans);
 router.get(
   "/get-available-electricity",
   transactionsController.getAvailableElectricity
-); //REVIEW:
+);
 
 /**
  * Protected Routes

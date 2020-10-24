@@ -18,3 +18,5 @@ exports.getAmountByRate = (amount, rate) => amount * rate;
 
 exports.getTransactions = (type, transactions) =>
   transactions.filter((trx) => trx.type === type || type === "all");
+
+exports.getMeterType = (type) => (type === "01" ? "PrePaid" : "PostPaid");

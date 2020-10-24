@@ -47,6 +47,12 @@ router.get(
   views.useSummaryLayout,
   views.cableSummary
 );
+router.get(
+  "/electric-bill/summary",
+  authController.protect,
+  views.useSummaryLayout,
+  views.electricSummary
+);
 
 router.get("/fund-wallet", authController.protect, views.fundWallet);
 router.get("/transfer-fund", authController.protect, views.transferFund);

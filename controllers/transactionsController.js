@@ -10,6 +10,7 @@ const {
   getDataValue,
   getCablePlansFor,
   makeCablePurchase,
+  makeElectricPayment,
 } = require("./../utils/transactionApi");
 const factory = require("./../factory/DBFactory");
 
@@ -233,9 +234,9 @@ exports.cableTV = catchAsync(async (req, res, next) => {
 });
 
 exports.electricBill = catchAsync(async (req, res, next) => {
-  const { product, plan, number } = req.body;
+  const { product, amount, number, prepaid } = req.body;
 
-  if (!cable || !plan || !number) {
+  if (!product || !amount || !number || !prepaid) {
     return next(new AppError("Invalid Inputs!"));
   }
 
@@ -243,22 +244,22 @@ exports.electricBill = catchAsync(async (req, res, next) => {
     response,
     transaction_id,
     discounted_amount,
-  } = await makeCablePurchase(cable, plan, number);
+    pins,
+  } = await makeElectricPayment(product, amount, number, prepaid);
 
   const transaction = await Transactions.create({
     userId: req.user.id,
     transactionId: transaction_id,
     status: response,
-    type: "cable",
+    type: "electricity",
     trx_detail: {
-      cable,
-      plan,
-      number,
+      ...req.body,
+      pins,
     },
-    orderType: `${getDataValue(data_amount)} Data Purchase`,
-    amount: discounted_amount,
+    orderType: `${amount} Data Purchase`,
+    amount: amount,
     amountCharged: discounted_amount,
-    walletBalance: (req.user.wallet || 0) - discounted_amount,
+    walletBalance: (req.user.wallet || 0) - amount,
   });
 
   res.status(201).json({

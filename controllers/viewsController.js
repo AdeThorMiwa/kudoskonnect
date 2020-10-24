@@ -3,6 +3,7 @@ const tabIntros = require("./../constants/tabIntro");
 const cables = require("../constants/cables");
 const catchAsync = require("../utils/catchAsync");
 const Transaction = require("../models/TransactionModel");
+const { getElectricCompany } = require("../utils/transactionApi");
 
 exports.home = (req, res, next) => {
   const page = req.url.slice(1, req.url.length);
@@ -52,14 +53,137 @@ exports.cableTv = (req, res, next) => {
   });
 };
 
-exports.electricBill = (req, res, next) => {
+exports.electricBill = catchAsync(async (req, res, next) => {
   const page = req.url.slice(1, req.url.length);
+  // const providers = await getElectricCompany();
   res.render("pages/electricBill", {
     page,
     title: "Electricity Bill",
     tabContent: tabIntros[page],
+    providers: [
+      {
+        product_id: "BPE-NGEK-OR",
+        name: "Eko PHCN",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "1000",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGIE-OR",
+        name: "Ikeja Electric",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "500",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGIB-OR",
+        name: "Ibadan Distribution",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "1000",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGEN-OR",
+        name: "Enugu Distribution",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "1000",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGCABIA-OR",
+        name: "Port Harcourt Prepaid",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "1000",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGCABIB-OR",
+        name: "Port Harcourt Postpaid",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "1000",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGCAAVB-OR",
+        name: "Kano Prepaid",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "100",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGCAAVC-OR",
+        name: "Kano Postpaid",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "100",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGCABABA-OR",
+        name: "Abuja Prepaid",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "100",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGCABABB-OR",
+        name: "Abuja Postpaid",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "100",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGKD-OR",
+        name: "Kaduna",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "100",
+        max_denomination: "1000000",
+        step: 100,
+      },
+      {
+        product_id: "BPE-NGJO-OR",
+        name: "JOS",
+        hasProductList: false,
+        hasValidation: true,
+        openRange: true,
+        min_denomination: "100",
+        max_denomination: "1000000",
+        step: 100,
+      },
+    ],
   });
-};
+});
 
 exports.auth = (req, res, next) => {
   res.render("pages/loginAndSignUp", {
@@ -133,6 +257,12 @@ exports.transferSummary = (req, res, next) => {
 exports.cableSummary = (req, res, next) => {
   res.render("pages/summary/cable", {
     title: "Cable Subscription",
+  });
+};
+
+exports.electricSummary = (req, res, next) => {
+  res.render("pages/summary/electric", {
+    title: "Electricity Bill Payment",
   });
 };
 
