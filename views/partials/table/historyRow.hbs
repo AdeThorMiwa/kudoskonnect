@@ -1,6 +1,7 @@
 <tr>
     <td class="align-middle">{{getTransactionValue transaction "date"}}</td>
-    <td class="align-middle"><img src="images/brands/operator/vodafone.jpg" class="img-thumbnail d-inline-flex mr-1">
+    <td class="align-middle"><img src="images/{{ getTransactionValue transaction "type" }}.png" width="60"
+            class="img-thumbnail d-inline-flex mr-1">
         <span class="text-1 d-inline-flex">{{getTransactionValue transaction "orderType"}}</span></td>
     <td class="align-middle">{{getTransactionValue transaction "transactionId"}}</td>
     <td class="align-middle text-center">
