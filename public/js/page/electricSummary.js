@@ -18,8 +18,9 @@ const makePayment = async (product, amount, number, prepaid) => {
 };
 
 const handleElectricSummarySummit = async (e) => {
-  console.log("object");
   e.preventDefault();
+  document.querySelector("#submitButton").disabled = true;
+
   const product = document.querySelector("#company").value;
   const amount = document.querySelector("#amount").value;
   const number = document.querySelector("#meterNo").value;

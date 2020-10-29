@@ -33,6 +33,7 @@ const signupUser = async (formData) => {
 
 const handleLoginForm = (e) => {
   e.preventDefault();
+  document.querySelector("#submitButton").disabled = true;
 
   const email = document.querySelector("#loginEmail").value;
   const password = document.querySelector("#loginPassword").value;
@@ -41,6 +42,7 @@ const handleLoginForm = (e) => {
 
 const handleSignupForm = (e) => {
   e.preventDefault();
+  document.querySelector("#submitButton").disabled = true;
 
   const fullname = document.querySelector("#signupFullname").value;
   const email = document.querySelector("#signupEmail").value;

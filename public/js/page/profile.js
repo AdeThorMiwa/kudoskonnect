@@ -5,9 +5,8 @@ const updateUser = async (formData) => {
     if (res.status === "fail" || res.status === "error")
       return alert.error(res.message);
 
-    alert.success(
-      `Profile Updated Successfully!`
-    );
+    alert.success(`Profile Updated Successfully!`);
+    document.querySelector("#submitButton").disabled = false;
   } catch (e) {
     alert.error(e.message);
   }
@@ -15,6 +14,7 @@ const updateUser = async (formData) => {
 
 const handleUserUpdate = (e) => {
   e.preventDefault();
+  document.querySelector("#submitButton").disabled = true;
 
   const fullname = document.querySelector("#updateFullname").value;
   const email = document.querySelector("#updateEmail").value;
@@ -22,4 +22,6 @@ const handleUserUpdate = (e) => {
   updateUser({ fullname, email, phone });
 };
 
-document.querySelector("#personalInformation").addEventListener("submit", handleUserUpdate)
+document
+  .querySelector("#personalInformation")
+  .addEventListener("submit", handleUserUpdate);

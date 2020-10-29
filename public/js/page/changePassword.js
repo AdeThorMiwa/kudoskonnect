@@ -5,17 +5,16 @@ const changePassword = async (formData) => {
     if (res.status === "fail" || res.status === "error")
       return alert.error(res.message);
 
-    alert.success(
-      `Password Updated Successfully!`
-    );
+    alert.success(`Password Updated Successfully!`);
+    document.querySelector("#submitButton").disabled = false;
   } catch (e) {
     alert.error(e.message);
   }
 };
 
-
 const handlePasswordChange = (e) => {
   e.preventDefault();
+  document.querySelector("#submitButton").disabled = true;
 
   const passwordCurrent = document.querySelector("#existingPassword").value;
   const password = document.querySelector("#newPassword").value;
@@ -23,4 +22,6 @@ const handlePasswordChange = (e) => {
   changePassword({ passwordCurrent, password, passwordConfirm });
 };
 
-document.querySelector("#changePassword").addEventListener("submit", handlePasswordChange)
+document
+  .querySelector("#changePassword")
+  .addEventListener("submit", handlePasswordChange);
