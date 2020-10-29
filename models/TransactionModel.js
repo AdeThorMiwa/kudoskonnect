@@ -64,6 +64,18 @@ const transactionSchema = new mongoose.Schema({
   },
 });
 
+transactionSchema.pre("save", async function (next) {
+  try {
+    const user = await mongoose.model("User").findById(this.userId);
+
+    await user.debitWallet(this.amount);
+
+    return next();
+  } catch (e) {
+    throw e;
+  }
+});
+
 const Transaction = mongoose.model("Transaction", transactionSchema);
 
 module.exports = Transaction;

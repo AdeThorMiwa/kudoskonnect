@@ -95,7 +95,7 @@ userSchema.pre("save", function (next) {
 /**
  * This hooks check if user was referred
  * TODO: Do something if user was referred
- */
+ */ 
 userSchema.pre("save", async function (next) {
   if (this.referral) {
     try {
