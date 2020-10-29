@@ -47,3 +47,5 @@ exports.getTransactionValue = (trx, value) => {
   }
   return trx[value];
 };
+
+exports.statusIsOk = (status = "NOT_OK") => status === "OK";
